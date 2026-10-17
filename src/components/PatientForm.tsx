@@ -1,4 +1,4 @@
-import type { Lang, Patient } from "../types";
+import type { Lang, PatientDraft } from "../types";
 import {
   adlLabels,
   diagnosisLabels,
@@ -10,10 +10,10 @@ import {
 } from "../i18n";
 
 interface Props {
-  patient: Patient;
+  patient: PatientDraft;
   lang: Lang;
-  personaProfile?: string;
-  onChange: (patient: Patient) => void;
+  canCheck: boolean;
+  onChange: (patient: PatientDraft) => void;
   onCheck: () => void;
 }
 
@@ -25,24 +25,27 @@ function optionsFor<K extends string>(labels: Record<K, Text>, lang: Lang) {
   ));
 }
 
+function pleaseSelect(lang: Lang) {
+  return <option value="">{ui.pleaseSelect[lang]}</option>;
+}
+
 export default function PatientForm({
   patient,
   lang,
-  personaProfile,
+  canCheck,
   onChange,
   onCheck,
 }: Props) {
-  const update = <K extends keyof Patient>(
+  const update = <K extends keyof PatientDraft>(
     field: K,
-    value: Patient[K],
+    value: PatientDraft[K],
   ) => {
-    onChange({ ...patient, [field]: value } as Patient);
+    onChange({ ...patient, [field]: value } as PatientDraft);
   };
 
   return (
     <div className="form">
       <h2>{ui.formTitle[lang]}</h2>
-      {personaProfile ? <p className="persona-profile">{personaProfile}</p> : null}
       <label>
         <span>{ui.age[lang]}</span>
         <input
@@ -50,15 +53,18 @@ export default function PatientForm({
           min={20}
           max={110}
           value={patient.age}
-          onChange={(e) => update("age", Number(e.target.value) || 0)}
+          onChange={(e) =>
+            update("age", e.target.value === "" ? "" : Number(e.target.value))
+          }
         />
       </label>
       <label>
         <span>{ui.insurance[lang]}</span>
         <select
           value={patient.insurance}
-          onChange={(e) => update("insurance", e.target.value as Patient["insurance"])}
+          onChange={(e) => update("insurance", e.target.value as PatientDraft["insurance"])}
         >
+          {pleaseSelect(lang)}
           {optionsFor(insuranceLabels, lang)}
         </select>
       </label>
@@ -66,8 +72,9 @@ export default function PatientForm({
         <span>{ui.employment[lang]}</span>
         <select
           value={patient.employment}
-          onChange={(e) => update("employment", e.target.value as Patient["employment"])}
+          onChange={(e) => update("employment", e.target.value as PatientDraft["employment"])}
         >
+          {pleaseSelect(lang)}
           {optionsFor(employmentLabels, lang)}
         </select>
       </label>
@@ -75,8 +82,9 @@ export default function PatientForm({
         <span>{ui.diagnosis[lang]}</span>
         <select
           value={patient.diagnosis}
-          onChange={(e) => update("diagnosis", e.target.value as Patient["diagnosis"])}
+          onChange={(e) => update("diagnosis", e.target.value as PatientDraft["diagnosis"])}
         >
+          {pleaseSelect(lang)}
           {optionsFor(diagnosisLabels, lang)}
         </select>
       </label>
@@ -84,8 +92,9 @@ export default function PatientForm({
         <span>{ui.family[lang]}</span>
         <select
           value={patient.family}
-          onChange={(e) => update("family", e.target.value as Patient["family"])}
+          onChange={(e) => update("family", e.target.value as PatientDraft["family"])}
         >
+          {pleaseSelect(lang)}
           {optionsFor(familyLabels, lang)}
         </select>
       </label>
@@ -93,12 +102,13 @@ export default function PatientForm({
         <span>{ui.adl[lang]}</span>
         <select
           value={patient.adl}
-          onChange={(e) => update("adl", e.target.value as Patient["adl"])}
+          onChange={(e) => update("adl", e.target.value as PatientDraft["adl"])}
         >
+          {pleaseSelect(lang)}
           {optionsFor(adlLabels, lang)}
         </select>
       </label>
-      <button className="primary" onClick={onCheck}>
+      <button className="primary" onClick={onCheck} disabled={!canCheck}>
         {ui.check[lang]}
       </button>
       <p className="hint">{ui.formHint[lang]}</p>

@@ -17,6 +17,7 @@ export const ui = {
     en: "Support-program eligibility tool for acute-care hospital medical social workers",
   },
   formTitle: { ja: "患者情報の入力", en: "Patient information" },
+  pleaseSelect: { ja: "選択してください", en: "Please select" },
   age: { ja: "年齢", en: "Age" },
   ageUnit: { ja: "歳", en: "y/o" },
   insurance: { ja: "医療保険", en: "Health insurance" },
@@ -34,7 +35,10 @@ export const ui = {
     ja: "患者情報を入力し、「支援を判定・生成する」を押してください。",
     en: "Enter patient information and press the button to generate results.",
   },
-  tabMsw: { ja: "MSWタイムライン", en: "MSW timeline" },
+  tabMsw: {
+    ja: "医療ソーシャルワーカー向けタイムライン",
+    en: "Medical Social Worker timeline",
+  },
   tabFamily: { ja: "ご家族向け資料", en: "Family handout" },
   patientSummary: { ja: "患者サマリー", en: "Patient summary" },
   noResults: {
@@ -48,8 +52,8 @@ export const ui = {
   },
   todoTitle: { ja: "今週の「やること」リスト", en: "To-do this week" },
   editHint: {
-    ja: "MSW用メモ: 各説明文は確認・編集してから印刷し、ご家族にお渡しください。",
-    en: "MSW note: review and edit each explanation before printing and handing it to the family.",
+    ja: "医療ソーシャルワーカー向けメモ: 各説明文は確認・編集してから印刷し、ご家族にお渡しください。",
+    en: "Medical Social Worker note: review and edit each explanation before printing and handing it to the family.",
   },
   print: { ja: "印刷", en: "Print" },
   disclaimer: {
