@@ -24,8 +24,9 @@ Stroke patients stay about 2 weeks, and in that window the MSW has to sort out f
    - **Family handout** — the same content in plain language, with a "to-do this week" list.
 5. **Family share (add-on)** — the MSW presses 「家族と共有する」 to publish the reviewed handout as a live page:
    - A QR code + link (`/f/<token>`) is added to the printed handout; scanning it opens a mobile, calm checklist.
-   - The family checks off tasks (with an optional "who completed this?" dialog) and can send a question.
-   - The MSW sees check-offs and questions in the 「家族との共有」 panel (3-second polling) with an unread badge.
+   - The family checks off tasks (with an optional "who completed this?" dialog).
+   - 「チャットで質問する」 opens a chatbot that answers only from the shared handout (deterministic, JA/EN); questions it cannot answer can be forwarded to the MSW with one tap.
+   - The MSW sees forwarded questions in the 「家族との共有」 panel (3-second polling) with an unread badge.
    - Nothing reaches the family until the MSW shares; the family page never runs eligibility or calls the LLM.
    - Links expire after 30 days, can be re-issued (lost paper) and stopped; a JA/EN toggle is on the family page.
 
@@ -87,8 +88,9 @@ src/
 └── i18n.ts                  # JA/EN UI strings and label maps
 server/
 ├── share.ts                 # Vite plugin: /api/share/* endpoints + /f/:token page
+├── chatbot.ts               # handout-grounded chatbot (deterministic, JA/EN)
 ├── store.ts                 # in-memory SharedPlan store (token, expiry, reissue)
-├── familyPage.ts            # family page HTML (JA/EN toggle, no external assets)
+├── familyPage.ts            # family page HTML (JA/EN toggle, chat, no external assets)
 └── store.test.ts
 ```
 

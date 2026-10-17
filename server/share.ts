@@ -1,6 +1,8 @@
 import type { Connect, Plugin, PreviewServer, ViteDevServer } from "vite";
 import type { ServerResponse } from "node:http";
 import { createShareStore } from "./store";
+import { chatReply } from "./chatbot";
+import type { ChatLang } from "./chatbot";
 import { familyPageHtml } from "./familyPage";
 
 const MAX_BODY_BYTES = 512 * 1024;
@@ -58,8 +60,10 @@ export function sharePlugin(): Plugin {
     res.end(JSON.stringify(body));
   };
 
-  const notFound = (res: ServerResponse, status: "not_found" | "revoked" | "expired") =>
-    sendJson(res, 200, { status, message: MESSAGE_ENDED });
+  const notFound = (
+    res: ServerResponse,
+    status: "not_found" | "replaced" | "revoked" | "expired",
+  ) => sendJson(res, 200, { status, message: MESSAGE_ENDED });
 
   /** スマホから開けるURL（LAN）と、今のオリジンでのURLを返す */
   const baseUrl = (host: string | undefined) => {
@@ -179,6 +183,23 @@ export function sharePlugin(): Plugin {
       const ok = store.markAnswered(token, decodeURIComponent(rest[1]));
       if (ok) sendJson(res, 200, { ok: true });
       else notFound(res, "not_found");
+      return;
+    }
+
+    // POST /api/share/:token/chat — チャットボット（案内の内容からのみ回答）
+    if (rest[0] === "chat" && rest.length === 1 && req.method === "POST") {
+      const found = store.resolve(token);
+      if (found.status !== "ok") {
+        notFound(res, found.status);
+        return;
+      }
+      const body = parseJson(await readBody(req)) as {
+        text?: unknown;
+        lang?: unknown;
+      } | null;
+      const lang: ChatLang = body?.lang === "en" ? "en" : "ja";
+      const text = typeof body?.text === "string" ? body.text : "";
+      sendJson(res, 200, chatReply(found.plan, text, lang));
       return;
     }
 

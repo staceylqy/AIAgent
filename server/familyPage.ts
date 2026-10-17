@@ -2,7 +2,9 @@
  * ご家族向けページ（/f/:token）のHTML。
  * 外部フォント・外部スクリプトに依存しない単一ファイル（インラインCSS/JS）で、
  * データは API (/api/share/:token) から取得する。
- * 右上のボタンで日本語 / 英語を切り替えられる（共有された案内は両言語を含む）。
+ * - 右上のボタンで日本語 / 英語を切り替えられる（共有された案内は両言語を含む）。
+ * - 「チャットで質問する」は共有された案内の内容からのみ答えるチャットボット。
+ *   答えられない質問は「相談室に送る」ボタンで担当者（MSW）へ転送できる。
  */
 export function familyPageHtml(): string {
   return `<!doctype html>
@@ -181,19 +183,6 @@ details[open] .sec-summary::after { content: "－"; }
   color: #fff;
   cursor: pointer;
 }
-.sent {
-  position: fixed;
-  left: 16px; right: 16px; bottom: 86px;
-  margin: 0 auto;
-  max-width: 576px;
-  background: var(--accent-soft);
-  color: var(--accent);
-  font-weight: 700;
-  border-radius: 10px;
-  padding: 12px 16px;
-  text-align: center;
-  box-shadow: 0 2px 8px rgba(31,41,51,.15);
-}
 .overlay {
   position: fixed;
   inset: 0;
@@ -230,6 +219,45 @@ details[open] .sec-summary::after { content: "－"; }
 .err { color: #c0392b; font-size: 15px; margin: 0 0 10px; }
 .row { display: flex; gap: 10px; }
 .row .btn { flex: 1; }
+/* チャット */
+.chat-sheet { display: flex; flex-direction: column; max-height: 82vh; }
+.chat-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; gap: 10px; }
+.chat-head h2 { margin: 0; font-size: 19px; }
+.chat-log {
+  overflow-y: auto;
+  max-height: 46vh;
+  padding: 4px 2px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.chat-row { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; max-width: 88%; }
+.chat-row.chat-user { align-self: flex-end; align-items: flex-end; }
+.bubble {
+  padding: 10px 14px;
+  border-radius: 14px;
+  font-size: 16px;
+  line-height: 1.6;
+  white-space: pre-line;
+  word-break: break-word;
+}
+.bubble-bot { background: #eef2f4; border: 1px solid var(--line); }
+.bubble-user { background: var(--accent); color: #fff; }
+.chat-forward { align-self: flex-start; }
+.chat-forwarded { font-size: 14px; color: var(--accent); font-weight: 700; margin: 0; }
+.chat-input-row { display: flex; gap: 8px; margin-top: 10px; align-items: flex-end; }
+.chat-input-row textarea {
+  flex: 1;
+  font: inherit;
+  font-size: 17px;
+  padding: 10px 12px;
+  border: 1.5px solid var(--line);
+  border-radius: 10px;
+  resize: none;
+  background: #fff;
+  color: var(--ink);
+}
+.chat-send { flex: none; min-width: 92px; min-height: 48px; }
 .ended { text-align: center; padding: 60px 8px; }
 .ended-msg { font-size: 19px; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 20px 16px; }
 .toast {
@@ -257,13 +285,13 @@ details[open] .sec-summary::after { content: "－"; }
       <h1 id="heading"></h1>
       <p id="summary" class="summary"></p>
       <div id="tip" class="card tip hidden">
-        <p id="tip-title" class="tip-title"></p>
-        <p id="tip-iphone" class="tip-line"></p>
-        <p id="tip-android" class="tip-line"></p>
-        <button id="tip-close" class="btn small"></button>
+        <p id="tip-title" class="tip-title">ホーム画面に追加すると、次からすぐに開けます</p>
+        <p id="tip-iphone" class="tip-line">iPhone: 画面下部の共有ボタン →「ホーム画面に追加」</p>
+        <p id="tip-android" class="tip-line">Android: 右上のメニュー(⋮) →「ホーム画面に追加」</p>
+        <button id="tip-close" class="btn small">閉じる</button>
       </div>
       <div class="card">
-        <button id="share-btn" class="btn" style="width:100%"></button>
+        <button id="share-btn" class="btn" style="width:100%">ほかのご家族に送る</button>
       </div>
       <div class="card">
         <p id="progress-count" class="progress-count"></p>
@@ -272,59 +300,56 @@ details[open] .sec-summary::after { content: "－"; }
         </div>
       </div>
     </header>
-    <h2 id="todo-title" class="section-title"></h2>
+    <h2 id="todo-title" class="section-title">今週やること</h2>
     <div class="card" style="padding: 4px 16px;">
       <ul id="todo-list" class="todo-list"></ul>
     </div>
-    <h2 id="detail-title" class="section-title"></h2>
+    <h2 id="detail-title" class="section-title">くわしい内容</h2>
     <div id="sections"></div>
     <footer class="foot">
       <p id="footer-contact"></p>
-      <p id="footer-note"></p>
-      <p><button id="reset-name" class="linklike"></button></p>
+      <p id="footer-note">この内容は病院の担当者が確認したものです。わからないことは遠慮なくご相談ください。</p>
+      <p><button id="reset-name" class="linklike">この端末の名前をリセット</button></p>
     </footer>
   </main>
 </div>
 <div id="bottombar" class="bottombar hidden">
-  <button id="ask-btn" class="ask-btn"></button>
+  <button id="ask-btn" class="ask-btn">チャットで質問する</button>
 </div>
-<div id="sent-banner" class="sent hidden" role="status"></div>
 
 <div id="identity-dialog" class="overlay hidden" role="dialog" aria-modal="true" aria-labelledby="id-title">
   <div class="sheet">
-    <h2 id="id-title"></h2>
-    <label class="fld"><span id="id-relation-label" class="fld-label"></span>
+    <h2 id="id-title">どなたが完了しましたか？（任意）</h2>
+    <label class="fld"><span id="id-relation-label" class="fld-label">続柄</span>
       <select id="id-relation">
-        <option value=""></option>
-        <option value="spouse"></option>
-        <option value="child"></option>
-        <option value="sibling"></option>
-        <option value="grandchild"></option>
-        <option value="other"></option>
+        <option value="">選ばない</option>
+        <option value="spouse">配偶者</option>
+        <option value="child">子</option>
+        <option value="sibling">きょうだい</option>
+        <option value="grandchild">孫</option>
+        <option value="other">その他</option>
       </select>
     </label>
-    <label class="fld"><span id="id-name-label" class="fld-label"></span>
-      <input id="id-name" type="text" maxlength="20">
+    <label class="fld"><span id="id-name-label" class="fld-label">呼び名（20文字まで・任意）</span>
+      <input id="id-name" type="text" maxlength="20" placeholder="例: 長男 太郎">
     </label>
     <div class="row">
-      <button id="id-skip" class="btn ghost"></button>
-      <button id="id-save" class="btn primary"></button>
+      <button id="id-skip" class="btn ghost">スキップ</button>
+      <button id="id-save" class="btn primary">保存する</button>
     </div>
   </div>
 </div>
 
-<div id="ask-dialog" class="overlay hidden" role="dialog" aria-modal="true" aria-labelledby="ask-title">
-  <div class="sheet">
-    <h2 id="ask-title"></h2>
-    <p id="ask-from" class="tip-line"></p>
-    <label class="fld"><span id="ask-label" class="fld-label"></span>
-      <textarea id="ask-text" maxlength="200" rows="4"></textarea>
-    </label>
-    <p id="ask-count" class="count"></p>
-    <p id="ask-error" class="err hidden"></p>
-    <div class="row">
-      <button id="ask-cancel" class="btn ghost"></button>
-      <button id="ask-send" class="btn primary"></button>
+<div id="chat-dialog" class="overlay hidden" role="dialog" aria-modal="true" aria-labelledby="chat-title">
+  <div class="sheet chat-sheet">
+    <div class="chat-head">
+      <h2 id="chat-title">質問チャット</h2>
+      <button id="chat-close" class="btn small">閉じる</button>
+    </div>
+    <div id="chat-log" class="chat-log" aria-live="polite"></div>
+    <div class="chat-input-row">
+      <textarea id="chat-input" maxlength="200" rows="2" placeholder="例: 介護保険の認定はいつ頃できますか"></textarea>
+      <button id="chat-send" class="btn primary chat-send">送信</button>
     </div>
   </div>
 </div>
@@ -337,7 +362,7 @@ details[open] .sec-summary::after { content: "－"; }
   var LS_ID = "family-identity-v1";
   var LS_TIP = "family-tip-dismissed-v1";
   var LS_LANG = "family-lang-v1";
-  var ASK_MAX = 200;
+  var CHAT_MAX = 200;
 
   var I18N = {
     loading: { ja: "読み込み中…", en: "Loading…" },
@@ -365,17 +390,14 @@ details[open] .sec-summary::after { content: "－"; }
     resetName: { ja: "この端末の名前をリセット", en: "Reset the name saved on this device" },
     resetConfirm: { ja: "この端末に保存した名前をリセットしますか？", en: "Reset the name saved on this device?" },
     resetDone: { ja: "この端末の名前をリセットしました", en: "The name on this device has been reset" },
-    askBtn: { ja: "相談室に質問する", en: "Ask the consultation desk" },
-    askTitle: { ja: "相談室に質問する", en: "Ask the consultation desk" },
-    askFrom: { ja: "送信者: {name}", en: "From: {name}" },
-    askLabel: { ja: "質問（200文字まで）", en: "Your question (up to 200 characters)" },
-    askPlaceholder: { ja: "例: 退院の日はいつごろになりそうですか", en: "e.g. When is discharge expected?" },
-    askCount: { ja: "残り {n} 文字", en: "{n} characters left" },
-    askEmpty: { ja: "質問を入力してください", en: "Please enter your question" },
-    askFailed: { ja: "送信できませんでした。もう一度お試しください", en: "Could not send. Please try again" },
-    askCancel: { ja: "やめる", en: "Cancel" },
-    askSend: { ja: "送信する", en: "Send" },
-    sentBanner: { ja: "送信しました。担当者から連絡します", en: "Sent. Our staff will get back to you." },
+    chatBtn: { ja: "チャットで質問する", en: "Ask in chat" },
+    chatTitle: { ja: "質問チャット", en: "Q&A chat" },
+    chatOpening: { ja: "こんにちは。共有された案内について、わからないことをお尋ねください。", en: "Hello. Ask me anything about this handout." },
+    chatPlaceholder: { ja: "例: 介護保険の認定はいつ頃できますか", en: "e.g. When is the care certification done?" },
+    chatSend: { ja: "送信", en: "Send" },
+    chatFailed: { ja: "送信できませんでした。もう一度お試しください", en: "Could not send. Please try again" },
+    chatForward: { ja: "この質問を相談室に送る", en: "Forward this to the staff" },
+    chatForwarded: { ja: "送信しました。担当者から連絡します", en: "Sent. Our staff will get back to you." },
     idTitle: { ja: "どなたが完了しましたか？（任意）", en: "Who completed this? (optional)" },
     idRelation: { ja: "続柄", en: "Relationship" },
     idName: { ja: "呼び名（20文字まで・任意）", en: "Name (optional, up to 20 characters)" },
@@ -404,6 +426,9 @@ details[open] .sec-summary::after { content: "－"; }
   var pendingTodoId = null;
   var pollTimer = null;
   var endedStatus = null;
+  var chatLog = [];
+  var chatSeeded = false;
+  var chatBusy = false;
 
   function $(id) { return document.getElementById(id); }
   function el(tag, cls, text) {
@@ -461,7 +486,7 @@ details[open] .sec-summary::after { content: "－"; }
 
   function applyStaticTexts() {
     document.documentElement.lang = lang;
-    document.title = plan ? t("appTitle") : I18N.appTitle[lang];
+    document.title = I18N.appTitle[lang];
     $("loading").textContent = t("loading");
     $("lang-toggle").textContent = lang === "ja" ? "English" : "日本語";
     $("tip-title").textContent = t("tipTitle");
@@ -473,17 +498,17 @@ details[open] .sec-summary::after { content: "－"; }
     $("detail-title").textContent = t("detailTitle");
     $("footer-note").textContent = t("footerNote");
     $("reset-name").textContent = t("resetName");
-    $("ask-btn").textContent = t("askBtn");
-    $("sent-banner").textContent = t("sentBanner");
+    $("ask-btn").textContent = t("chatBtn");
+    $("chat-title").textContent = t("chatTitle");
+    $("chat-close").textContent = t("close");
+    $("chat-send").textContent = t("chatSend");
+    $("chat-input").placeholder = t("chatPlaceholder");
     $("id-title").textContent = t("idTitle");
     $("id-relation-label").textContent = t("idRelation");
     $("id-name-label").textContent = t("idName");
     $("id-name").placeholder = t("idNamePlaceholder");
     $("id-skip").textContent = t("idSkip");
     $("id-save").textContent = t("idSave");
-    $("ask-title").textContent = t("askTitle");
-    $("ask-label").textContent = t("askLabel");
-    $("ask-text").placeholder = t("askPlaceholder");
     var select = $("id-relation");
     select.options[0].textContent = t("relNone");
     for (var i = 0; i < RELATION_KEYS.length; i++) {
@@ -501,10 +526,7 @@ details[open] .sec-summary::after { content: "－"; }
     renderTodos();
     renderSections();
     renderFooter();
-    if (!$("ask-dialog").classList.contains("hidden")) {
-      $("ask-from").textContent = t("askFrom").replace("{name}", identityLabel());
-      updateAskCount();
-    }
+    if (!$("chat-dialog").classList.contains("hidden")) renderChat();
   }
 
   $("lang-toggle").onclick = function () {
@@ -513,7 +535,7 @@ details[open] .sec-summary::after { content: "－"; }
     applyLang();
   };
 
-  /* ===== 描画 ===== */
+  /* ===== 終了画面 ===== */
 
   function renderEnded() {
     var map = {
@@ -528,7 +550,6 @@ details[open] .sec-summary::after { content: "－"; }
     $("loading").classList.add("hidden");
     $("content").classList.add("hidden");
     $("bottombar").classList.add("hidden");
-    $("sent-banner").classList.add("hidden");
     var ended = $("ended");
     ended.classList.remove("hidden");
     ended.textContent = "";
@@ -541,6 +562,8 @@ details[open] .sec-summary::after { content: "－"; }
     stopPolling();
     renderEnded();
   }
+
+  /* ===== 描画 ===== */
 
   function renderAll(p) {
     plan = p;
@@ -723,6 +746,8 @@ details[open] .sec-summary::after { content: "－"; }
       });
   }
 
+  /* ===== 完了者ダイアログ ===== */
+
   function openIdentityDialog() {
     dialogOpen = true;
     $("id-relation").value = identity.relation || "";
@@ -759,48 +784,94 @@ details[open] .sec-summary::after { content: "－"; }
     }
   };
 
-  function updateAskCount() {
-    var left = ASK_MAX - $("ask-text").value.length;
-    $("ask-count").textContent = t("askCount").replace("{n}", String(left));
+  /* ===== 質問チャット ===== */
+
+  function openChat() {
+    dialogOpen = true;
+    if (!chatSeeded) {
+      chatLog.push({ who: "bot", text: t("chatOpening"), forwardable: false, forwarded: false, questionText: "" });
+      chatSeeded = true;
+    }
+    $("chat-dialog").classList.remove("hidden");
+    renderChat();
+    $("chat-input").focus();
+  }
+  function closeChat() {
+    dialogOpen = false;
+    $("chat-dialog").classList.add("hidden");
+  }
+  $("ask-btn").onclick = openChat;
+  $("chat-close").onclick = closeChat;
+
+  function renderChat() {
+    var log = $("chat-log");
+    log.textContent = "";
+    chatLog.forEach(function (m) {
+      var row = el("div", "chat-row chat-" + m.who);
+      row.appendChild(el("div", "bubble bubble-" + m.who, m.text));
+      if (m.who === "bot" && m.forwardable && !m.forwarded && m.questionText) {
+        var btn = el("button", "btn small chat-forward", t("chatForward"));
+        btn.onclick = function () { forwardQuestion(m); };
+        row.appendChild(btn);
+      }
+      if (m.who === "bot" && m.forwarded) {
+        row.appendChild(el("p", "chat-forwarded", t("chatForwarded")));
+      }
+      log.appendChild(row);
+    });
+    log.scrollTop = log.scrollHeight;
   }
 
-  function openAskDialog() {
-    dialogOpen = true;
-    $("ask-text").value = "";
-    updateAskCount();
-    $("ask-error").classList.add("hidden");
-    $("ask-from").textContent = t("askFrom").replace("{name}", identityLabel());
-    $("sent-banner").classList.add("hidden");
-    $("ask-dialog").classList.remove("hidden");
-    $("ask-text").focus();
-  }
-  $("ask-btn").onclick = openAskDialog;
-  $("ask-cancel").onclick = function () {
-    dialogOpen = false;
-    $("ask-dialog").classList.add("hidden");
-  };
-  $("ask-text").addEventListener("input", updateAskCount);
-  $("ask-send").onclick = function () {
-    var text = $("ask-text").value.trim().slice(0, ASK_MAX);
-    if (!text) {
-      $("ask-error").textContent = t("askEmpty");
-      $("ask-error").classList.remove("hidden");
-      return;
-    }
-    $("ask-send").disabled = true;
-    api("POST", "/question", { text: text, from: identityLabel() })
+  function forwardQuestion(m) {
+    api("POST", "/question", { text: m.questionText, from: identityLabel() })
       .then(function () {
-        dialogOpen = false;
-        $("ask-dialog").classList.add("hidden");
-        $("sent-banner").textContent = t("sentBanner");
-        $("sent-banner").classList.remove("hidden");
+        m.forwarded = true;
+        renderChat();
       })
       .catch(function () {
-        $("ask-error").textContent = t("askFailed");
-        $("ask-error").classList.remove("hidden");
+        toast(t("saveFailed"));
+      });
+  }
+
+  function sendChat() {
+    var input = $("chat-input");
+    var text = input.value.trim().slice(0, CHAT_MAX);
+    if (!text || chatBusy) return;
+    chatBusy = true;
+    chatLog.push({ who: "user", text: text, forwardable: false, forwarded: false, questionText: "" });
+    input.value = "";
+    renderChat();
+    api("POST", "/chat", { text: text, lang: lang })
+      .then(function (res) {
+        chatBusy = false;
+        if (res && typeof res.reply === "string") {
+          chatLog.push({
+            who: "bot",
+            text: res.reply,
+            forwardable: !!res.forwardable,
+            forwarded: false,
+            questionText: res.forwardable ? text : ""
+          });
+        } else {
+          chatLog.push({ who: "bot", text: t("chatFailed"), forwardable: false, forwarded: false, questionText: "" });
+        }
+        renderChat();
       })
-      .finally(function () { $("ask-send").disabled = false; });
-  };
+      .catch(function () {
+        chatBusy = false;
+        chatLog.push({ who: "bot", text: t("chatFailed"), forwardable: false, forwarded: false, questionText: "" });
+        renderChat();
+      });
+  }
+  $("chat-send").onclick = sendChat;
+  $("chat-input").addEventListener("keydown", function (e) {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      sendChat();
+    }
+  });
+
+  /* ===== 取得とポーリング ===== */
 
   function fetchAndRender(first) {
     api("GET", "")
