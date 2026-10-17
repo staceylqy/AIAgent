@@ -56,6 +56,73 @@ export const ui = {
     ja: "本ツールは学習用デモです。判定は簡略化した規則表に基づき、実際の受給資格を保証するものではありません。申請前に必ず公式情報・担当窓口でご確認ください。",
     en: "This is a learning demo. Eligibility uses a simplified rule table and is not a guarantee; always verify with official sources before applying.",
   },
+  sharePanelTitle: { ja: "家族との共有", en: "Share with family" },
+  shareNote: {
+    ja: "共有されるのは、ご家族向け案内の内容だけです。",
+    en: "Only the content of the family handout is shared.",
+  },
+  shareStart: { ja: "家族と共有する", en: "Share with family" },
+  shareDialogIntro: {
+    ja: "共有リンクとQRコードを作成します。ご家族は日本語・英語を切り替えて見られます。",
+    en: "Create a share link and QR code. The family can view it in Japanese or English.",
+  },
+  displayNameLabel: {
+    ja: "表示名（ご家族での本人の呼び方）",
+    en: "Display name (how to refer to the patient)",
+  },
+  contactLabel: {
+    ja: "担当窓口の案内（印刷面と共有ページに載ります）",
+    en: "Contact line (printed and shown on the family page)",
+  },
+  cancel: { ja: "キャンセル", en: "Cancel" },
+  shareConfirmBtn: { ja: "共有する", en: "Share" },
+  shareFailed: {
+    ja: "共有できませんでした。開発サーバーが起動しているか確認してください。",
+    en: "Sharing failed. Make sure the dev server is running.",
+  },
+  shareQrCaption: {
+    ja: "スマホのカメラで読み取ると、ご家族のページが開きます。",
+    en: "Scanning with a phone camera opens the family page.",
+  },
+  copyLink: { ja: "リンクをコピー", en: "Copy link" },
+  copied: { ja: "コピーしました", en: "Copied" },
+  openWindow: {
+    ja: "別のウィンドウで開く（確認用）",
+    en: "Open in another window (check)",
+  },
+  expiryLabel: { ja: "有効期限", en: "Expires" },
+  showQr: { ja: "QRコードを再表示", en: "Show QR code again" },
+  close: { ja: "閉じる", en: "Close" },
+  reprint: { ja: "案内を再印刷", en: "Reprint handout" },
+  reissueBtn: { ja: "リンクを作り直す", en: "Issue a new link" },
+  revokeBtn: { ja: "共有を停止", en: "Stop sharing" },
+  confirmReissue: {
+    ja: "今のリンクは使えなくなります。新しいQRコードとリンクを作ります。よろしいですか？",
+    en: "The current link will stop working. Issue a new QR code and link?",
+  },
+  confirmRevoke: {
+    ja: "共有を停止すると、ご家族はこのページを見られなくなります。よろしいですか？",
+    en: "Once stopped, the family can no longer open this page. Stop sharing?",
+  },
+  tasksTitle: { ja: "やることの状況", en: "Task status" },
+  statusDone: { ja: "完了", en: "Done" },
+  statusTodo: { ja: "未完了", en: "Not yet" },
+  questionsTitle: { ja: "ご家族からの質問", en: "Questions from the family" },
+  noQuestions: { ja: "質問はまだありません。", en: "No questions yet." },
+  markAnswered: { ja: "対応済みにする", en: "Mark answered" },
+  statusAnswered: { ja: "対応済み", en: "Answered" },
+  printQrHint1: {
+    ja: "スマホで読み取ると、最新の状況とチェックリストを見られます",
+    en: "Scan with your phone to see the latest status and checklist",
+  },
+  printQrHint2: {
+    ja: "この用紙は大切に保管してください。なくした場合は病院の相談室にお声がけください",
+    en: "Keep this sheet safe. If you lose it, please ask the hospital consultation desk",
+  },
+  printFooterNote: {
+    ja: "最新の内容はQRコードからご確認ください。",
+    en: "Check the QR code for the latest information.",
+  },
 } satisfies Record<string, Text>;
 
 export const insuranceLabels: Record<InsuranceType, Text> = {

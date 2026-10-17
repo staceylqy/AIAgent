@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import FamilyHandout from "./components/FamilyHandout";
 import MswTimeline from "./components/MswTimeline";
 import PatientForm from "./components/PatientForm";
@@ -7,11 +7,12 @@ import { programs } from "./data/programs";
 import { findMatchingPrograms } from "./eligibility/engine";
 import { ui } from "./i18n";
 import { getProvider } from "./llm";
+import { ShareProvider, useShare } from "./share/ShareContext";
 import type { GeneratedProgram, Lang, Patient, Persona } from "./types";
 
 type Tab = "msw" | "family";
 
-export default function App() {
+function AppScreen() {
   const [lang, setLang] = useState<Lang>("ja");
   const [patient, setPatient] = useState<Patient>(personas[0].patient);
   const [activePersona, setActivePersona] = useState<Persona | null>(
@@ -20,6 +21,12 @@ export default function App() {
   const [generated, setGenerated] = useState<GeneratedProgram[] | null>(null);
   const [edits, setEdits] = useState<Record<string, string>>({});
   const [tab, setTab] = useState<Tab>("msw");
+  const { unread, markSeen } = useShare();
+
+  // ご家族タブを開いている間は新着バッジを確認済みにする
+  useEffect(() => {
+    if (tab === "family") markSeen();
+  }, [tab, unread, markSeen]);
 
   const handleFieldChange = (next: Patient) => {
     setPatient(next);
@@ -107,6 +114,7 @@ export default function App() {
                   onClick={() => setTab("family")}
                 >
                   {ui.tabFamily[lang]}
+                  {unread > 0 && <span className="tab-badge">{unread}</span>}
                 </button>
               </div>
               {tab === "msw" ? (
@@ -125,5 +133,13 @@ export default function App() {
       </main>
       <footer className="footer no-print">{ui.disclaimer[lang]}</footer>
     </div>
+  );
+}
+
+export default function App() {
+  return (
+    <ShareProvider>
+      <AppScreen />
+    </ShareProvider>
   );
 }

@@ -403,3 +403,309 @@ body {
     display: none;
   }
 }
+
+/* ===== 家族との共有パネル ===== */
+
+.share-panel {
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 2px solid var(--accent);
+}
+
+.share-panel h3 {
+  margin: 0 0 8px;
+  font-size: 1rem;
+  color: var(--accent);
+}
+
+.share-note {
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin: 0 0 12px;
+}
+
+.share-start {
+  font: inherit;
+  cursor: pointer;
+  border: 1px solid var(--accent);
+  background: var(--accent);
+  color: #fff;
+  border-radius: 6px;
+  padding: 9px 20px;
+  font-weight: 600;
+}
+
+.share-start:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.share-grid {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.share-qr {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 10px;
+}
+
+.share-qr svg {
+  display: block;
+}
+
+.share-meta {
+  flex: 1;
+  min-width: 220px;
+}
+
+.share-hint {
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin: 0 0 6px;
+}
+
+.share-url {
+  font-size: 0.82rem;
+  word-break: break-all;
+  background: var(--accent-soft);
+  border-radius: 6px;
+  padding: 6px 8px;
+  margin: 0 0 8px;
+}
+
+.share-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.share-expiry {
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin: 0;
+}
+
+.share-tasks,
+.share-questions {
+  margin-top: 14px;
+  border-top: 1px dashed var(--line);
+  padding-top: 10px;
+}
+
+.share-tasks h4,
+.share-questions h4 {
+  margin: 0 0 8px;
+  font-size: 0.88rem;
+}
+
+.share-tasks ul,
+.share-questions ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.share-tasks li {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+  flex-wrap: wrap;
+  font-size: 0.85rem;
+}
+
+.share-tasks li.task-done .task-text {
+  color: var(--muted);
+}
+
+.task-meta {
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
+.share-empty {
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin: 0;
+}
+
+.share-questions li {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 8px 10px;
+}
+
+.share-questions li.answered {
+  background: var(--accent-soft);
+}
+
+.q-text {
+  margin: 0;
+  font-size: 0.85rem;
+}
+
+.q-meta {
+  margin: 4px 0 6px;
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+.chip {
+  display: inline-block;
+  font-size: 0.72rem;
+  border-radius: 999px;
+  padding: 1px 10px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.chip-done {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.chip-todo {
+  background: var(--during-soft);
+  color: var(--during);
+}
+
+.dialog-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(31, 41, 51, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+  padding: 16px;
+}
+
+.dialog {
+  background: #fff;
+  border-radius: 10px;
+  padding: 20px;
+  width: 100%;
+  max-width: 420px;
+  box-shadow: 0 8px 30px rgba(31, 41, 51, 0.25);
+}
+
+.dialog h3 {
+  margin: 0 0 12px;
+  font-size: 1rem;
+}
+
+.dialog label {
+  display: block;
+  margin-bottom: 12px;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.dialog input {
+  width: 100%;
+  margin-top: 4px;
+  padding: 8px 10px;
+  font: inherit;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+}
+
+.dialog-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  margin-top: 12px;
+}
+
+.dialog-error {
+  color: var(--now);
+  font-size: 0.8rem;
+  margin: 0 0 8px;
+}
+
+.dialog-qr {
+  text-align: center;
+}
+
+.dialog-qr svg {
+  display: inline-block;
+}
+
+.tab-badge {
+  display: inline-block;
+  margin-left: 6px;
+  min-width: 18px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: var(--now);
+  color: #fff;
+  font-size: 0.72rem;
+  text-align: center;
+  line-height: 18px;
+  font-weight: 600;
+}
+
+/* ===== 印刷レイアウトへの追加分 ===== */
+
+@media print {
+  .print-qr-box {
+    display: block;
+    float: right;
+    width: 46mm;
+    margin: 0 0 4mm 6mm;
+    padding: 3mm;
+    border: 1.5px solid #000;
+    border-radius: 2mm;
+    text-align: center;
+    font-size: 8.5pt;
+    line-height: 1.5;
+    color: #000;
+    white-space: normal;
+  }
+
+  .print-qr-box svg {
+    width: 38mm;
+    height: 38mm;
+  }
+
+  .print-qr-box p {
+    margin: 1mm 0 0;
+  }
+
+  .print-qr-url {
+    word-break: break-all;
+    font-size: 7.5pt;
+    color: #000;
+  }
+
+  .todo-box-print {
+    display: inline-block;
+    width: 4.2mm;
+    height: 4.2mm;
+    border: 1.2px solid #000;
+    border-radius: 0.5mm;
+    margin-right: 2.5mm;
+    flex: none;
+  }
+
+  .print-footer {
+    margin-top: 10mm;
+    padding-top: 3mm;
+    border-top: 1px solid #000;
+    font-size: 9pt;
+    color: #000;
+  }
+
+  .print-footer p {
+    margin: 1mm 0;
+  }
+}

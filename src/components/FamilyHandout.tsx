@@ -1,5 +1,8 @@
+import { QRCodeSVG } from "qrcode.react";
 import type { GeneratedProgram, Lang, Phase } from "../types";
 import { ui } from "../i18n";
+import { useShare } from "../share/ShareContext";
+import SharePanel from "./SharePanel";
 
 interface Props {
   lang: Lang;
@@ -14,7 +17,20 @@ const phaseRank: Record<Phase, number> = {
   after_discharge: 2,
 };
 
+function formatToday(lang: Lang): string {
+  const now = new Date();
+  if (lang === "ja") {
+    return `${now.getFullYear()}年${now.getMonth() + 1}月${now.getDate()}日`;
+  }
+  return now.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
+}
+
 export default function FamilyHandout({ lang, generated, edits, onEdit }: Props) {
+  const { info, plan } = useShare();
   const sorted = [...generated].sort(
     (a, b) => phaseRank[a.program.phase] - phaseRank[b.program.phase],
   );
@@ -31,6 +47,14 @@ export default function FamilyHandout({ lang, generated, edits, onEdit }: Props)
 
   return (
     <div className="family-handout">
+      {info ? (
+        <div className="print-qr-box print-only" aria-hidden="true">
+          <QRCodeSVG value={info.url} />
+          <p className="print-qr-url">{info.url}</p>
+          <p>{ui.printQrHint1[lang]}</p>
+          <p>{ui.printQrHint2[lang]}</p>
+        </div>
+      ) : null}
       <div className="handout-header">
         <h2>{ui.handoutTitle[lang]}</h2>
         <p>{ui.handoutIntro[lang]}</p>
@@ -64,6 +88,7 @@ export default function FamilyHandout({ lang, generated, edits, onEdit }: Props)
               <li key={t.id}>
                 <label className="todo-item">
                   <input type="checkbox" className="no-print" />
+                  <span className="todo-box-print print-only" aria-hidden="true" />
                   <span>{t.text}</span>
                 </label>
               </li>
@@ -71,12 +96,23 @@ export default function FamilyHandout({ lang, generated, edits, onEdit }: Props)
           </ul>
         </section>
       ) : null}
+      {info ? (
+        <div className="print-footer print-only">
+          <p>
+            {lang === "ja"
+              ? `印刷日：${formatToday(lang)}。${ui.printFooterNote[lang]}`
+              : `Printed on ${formatToday(lang)}. ${ui.printFooterNote[lang]}`}
+          </p>
+          {plan ? <p>{plan.msw_contact}</p> : null}
+        </div>
+      ) : null}
       <div className="handout-actions no-print">
         <p className="edit-hint">{ui.editHint[lang]}</p>
         <button className="primary" onClick={() => window.print()}>
           {ui.print[lang]}
         </button>
       </div>
+      <SharePanel lang={lang} generated={generated} edits={edits} />
     </div>
   );
 }

@@ -22,6 +22,12 @@ Stroke patients stay about 2 weeks, and in that window the MSW has to sort out f
 4. **Output — two views**:
    - **MSW timeline** — each program tagged "Now", "During stay", or "After discharge", with the reason and a source link.
    - **Family handout** — the same content in plain language, with a "to-do this week" list.
+5. **Family share (add-on)** — the MSW presses 「家族と共有する」 to publish the reviewed handout as a live page:
+   - A QR code + link (`/f/<token>`) is added to the printed handout; scanning it opens a mobile, calm checklist.
+   - The family checks off tasks (with an optional "who completed this?" dialog) and can send a question.
+   - The MSW sees check-offs and questions in the 「家族との共有」 panel (3-second polling) with an unread badge.
+   - Nothing reaches the family until the MSW shares; the family page never runs eligibility or calls the LLM.
+   - Links expire after 30 days, can be re-issued (lost paper) and stopped; a JA/EN toggle is on the family page.
 
 ## Demo personas
 
@@ -42,14 +48,15 @@ They produce clearly different programs and handouts, showing the branching logi
 - **Eligibility**: deterministic rule engine (`src/eligibility/engine.ts`) over a JSON rule table (`src/data/programs.json`, 10 programs)
 - **Text generation**: `LlmProvider` interface (`src/llm.ts`) — currently a deterministic mock that fills patient-specific templates; swap in a real API later without touching the UI
 - **UI language**: Japanese / English toggle
-- **Tests**: Vitest (engine branching logic + generated-text placeholders)
+- **Family share**: in-memory share server (`server/`) mounted as a Vite plugin — API under `/api/share/*`, family page at `/f/:token` (single-file HTML, no external assets), QR codes via `qrcode.react`
+- **Tests**: Vitest (engine branching logic, generated-text placeholders, share snapshot & store)
 
 ## Getting started
 
 ```bash
 npm install
-npm run dev      # start the dev server
-npm test         # run the eligibility engine + mock LLM tests
+npm run dev      # start the dev server (LAN-exposed so a phone can scan the QR)
+npm test         # run the eligibility engine + mock LLM + share tests
 npm run build    # type-check and build for production
 ```
 
@@ -57,11 +64,17 @@ npm run build    # type-check and build for production
 
 ```
 src/
-├── App.tsx                  # single screen: form + two output views
+├── App.tsx                  # single screen: form + two output views (+ share badge)
 ├── components/
 │   ├── PatientForm.tsx      # patient attribute input
 │   ├── MswTimeline.tsx      # programs grouped by Now / During stay / After discharge
-│   └── FamilyHandout.tsx   # plain-language handout, editable + printable
+│   ├── FamilyHandout.tsx    # plain-language handout, editable + printable (+ print QR box)
+│   └── SharePanel.tsx       # 「家族との共有」 panel: QR, tasks, questions, reissue/revoke
+├── share/
+│   ├── ShareContext.tsx     # share state + 3s polling + unread badge
+│   ├── snapshot.ts          # builds the JA/EN snapshot of the approved handout
+│   ├── api.ts               # share API client
+│   └── types.ts             # SharedPlan / SharedTodo / SharedQuestion
 ├── data/
 │   ├── programs.json        # rule table (10 support programs, JA/EN)
 │   ├── programs.ts          # typed loader
@@ -72,6 +85,11 @@ src/
 ├── llm.ts                   # LlmProvider interface + mock implementation
 ├── llm.test.ts
 └── i18n.ts                  # JA/EN UI strings and label maps
+server/
+├── share.ts                 # Vite plugin: /api/share/* endpoints + /f/:token page
+├── store.ts                 # in-memory SharedPlan store (token, expiry, reissue)
+├── familyPage.ts            # family page HTML (JA/EN toggle, no external assets)
+└── store.test.ts
 ```
 
 ## Disclaimer
