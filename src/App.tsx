@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import FamilyHandout from "./components/FamilyHandout";
 import MswTimeline from "./components/MswTimeline";
 import PatientForm from "./components/PatientForm";
+import { personas } from "./data/personas";
 import { programs } from "./data/programs";
 import { findMatchingPrograms } from "./eligibility/engine";
 import { ui } from "./i18n";
@@ -12,45 +13,12 @@ import type { GeneratedProgram, Lang, Patient, Persona } from "./types";
 type Tab = "msw" | "family";
 
 function AppScreen() {
-import type {
-  GeneratedProgram,
-  Lang,
-  Patient,
-  PatientDraft,
-} from "./types";
-
-type Tab = "msw" | "family";
-
-interface CheckResult {
-  patient: Patient;
-  generated: GeneratedProgram[];
-}
-
-const emptyPatient: PatientDraft = {
-  age: "",
-  insurance: "",
-  employment: "",
-  diagnosis: "",
-  family: "",
-  adl: "",
-};
-
-function isPatientComplete(patient: PatientDraft): patient is Patient {
-  return (
-    patient.age !== "" &&
-    patient.age > 0 &&
-    patient.insurance !== "" &&
-    patient.employment !== "" &&
-    patient.diagnosis !== "" &&
-    patient.family !== "" &&
-    patient.adl !== ""
-  );
-}
-
-export default function App() {
   const [lang, setLang] = useState<Lang>("ja");
-  const [patient, setPatient] = useState<PatientDraft>(emptyPatient);
-  const [result, setResult] = useState<CheckResult | null>(null);
+  const [patient, setPatient] = useState<Patient>(personas[0].patient);
+  const [activePersona, setActivePersona] = useState<Persona | null>(
+    personas[0],
+  );
+  const [generated, setGenerated] = useState<GeneratedProgram[] | null>(null);
   const [edits, setEdits] = useState<Record<string, string>>({});
   const [tab, setTab] = useState<Tab>("msw");
   const { unread, markSeen } = useShare();
@@ -60,15 +28,22 @@ export default function App() {
     if (tab === "family") markSeen();
   }, [tab, unread, markSeen]);
 
-  const handleFieldChange = (next: PatientDraft) => {
+  const handleFieldChange = (next: Patient) => {
     setPatient(next);
+    setActivePersona(null);
+  };
+
+  const handlePersona = (persona: Persona) => {
+    setPatient(persona.patient);
+    setActivePersona(persona);
+    setGenerated(null);
+    setEdits({});
   };
 
   const handleCheck = async () => {
-    if (!isPatientComplete(patient)) return;
     const matched = findMatchingPrograms(patient, programs);
-    const generated = await getProvider().generate(patient, matched);
-    setResult({ patient, generated });
+    const result = await getProvider().generate(patient, matched);
+    setGenerated(result);
     setEdits({});
     setTab("msw");
   };
@@ -76,6 +51,12 @@ export default function App() {
   const handleEdit = (key: string, value: string) => {
     setEdits((prev) => ({ ...prev, [key]: value }));
   };
+
+  const personaProfile = activePersona
+    ? lang === "ja"
+      ? activePersona.profileJa
+      : activePersona.profileEn
+    : undefined;
 
   return (
     <div className="app">
@@ -85,6 +66,19 @@ export default function App() {
           <p className="tagline">{ui.tagline[lang]}</p>
         </div>
         <div className="header-controls">
+          {personas.map((persona) => (
+            <button
+              key={persona.id}
+              className={
+                activePersona?.id === persona.id
+                  ? "persona-button active"
+                  : "persona-button"
+              }
+              onClick={() => handlePersona(persona)}
+            >
+              {lang === "ja" ? persona.labelJa : persona.labelEn}
+            </button>
+          ))}
           <button
             className="lang-toggle"
             onClick={() => setLang(lang === "ja" ? "en" : "ja")}
@@ -98,13 +92,13 @@ export default function App() {
           <PatientForm
             patient={patient}
             lang={lang}
-            canCheck={isPatientComplete(patient)}
+            personaProfile={personaProfile}
             onChange={handleFieldChange}
             onCheck={handleCheck}
           />
         </section>
         <section className="panel results-panel">
-          {result === null ? (
+          {generated === null ? (
             <p className="placeholder">{ui.placeholder[lang]}</p>
           ) : (
             <div className="results">
@@ -113,7 +107,7 @@ export default function App() {
                   className={tab === "msw" ? "tab active" : "tab"}
                   onClick={() => setTab("msw")}
                 >
-                  {ui.tabMsw[lang]} ({result.generated.length})
+                  {ui.tabMsw[lang]} ({generated.length})
                 </button>
                 <button
                   className={tab === "family" ? "tab active" : "tab"}
@@ -124,15 +118,11 @@ export default function App() {
                 </button>
               </div>
               {tab === "msw" ? (
-                <MswTimeline
-                  lang={lang}
-                  generated={result.generated}
-                  patient={result.patient}
-                />
+                <MswTimeline lang={lang} generated={generated} patient={patient} />
               ) : (
                 <FamilyHandout
                   lang={lang}
-                  generated={result.generated}
+                  generated={generated}
                   edits={edits}
                   onEdit={handleEdit}
                 />

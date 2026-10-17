@@ -3,8 +3,8 @@ import type { Persona } from "../types";
 export const personas: Persona[] = [
   {
     id: "persona-a",
-    labelJa: "患者A: 52歳・会社員",
-    labelEn: "Patient A: 52, employed",
+    labelJa: "デモA: 52歳・会社員",
+    labelEn: "Demo A: 52, employed",
     profileJa:
       "脳梗塞で入院中の事務職員。妻と高校生の娘との3人暮らし。退院時も歩行に軽度の支援が必要な見込み。",
     profileEn:
@@ -20,8 +20,8 @@ export const personas: Persona[] = [
   },
   {
     id: "persona-b",
-    labelJa: "患者B: 78歳・一人暮らし",
-    labelEn: "Patient B: 78, living alone",
+    labelJa: "デモB: 78歳・一人暮らし",
+    labelEn: "Demo B: 78, living alone",
     profileJa:
       "脳出血で入院中の高齢者。基礎年金のみで暮らす一人暮らし。退院後も介護が必要な見込み。",
     profileEn:
