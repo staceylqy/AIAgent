@@ -63,26 +63,12 @@ body {
   flex-wrap: wrap;
 }
 
-.persona-button,
 .lang-toggle,
 .tab,
 .primary {
   font: inherit;
   border-radius: 6px;
   cursor: pointer;
-}
-
-.persona-button {
-  border: 1px solid var(--accent);
-  background: var(--panel);
-  color: var(--accent);
-  padding: 6px 12px;
-  font-size: 0.85rem;
-}
-
-.persona-button.active {
-  background: var(--accent);
-  color: #fff;
 }
 
 .lang-toggle {
@@ -111,15 +97,6 @@ body {
 .form h2 {
   margin: 0 0 12px;
   font-size: 1.05rem;
-}
-
-.persona-profile {
-  margin: 0 0 12px;
-  padding: 10px 12px;
-  background: var(--accent-soft);
-  border-radius: 8px;
-  font-size: 0.82rem;
-  color: var(--ink);
 }
 
 .form label {
@@ -155,8 +132,13 @@ body {
   font-weight: 600;
 }
 
-.primary:hover {
+.primary:not(:disabled):hover {
   opacity: 0.9;
+}
+
+.primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .hint {
