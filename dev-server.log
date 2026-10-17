@@ -27,3 +27,13 @@ Re-optimizing dependencies because vite config has changed
 [2m12:56:38[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/styles.css[22m
 [2m13:54:35[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/App.tsx, /src/components/PatientForm.tsx, /src/components/MswTimeline.tsx, /src/components/FamilyHandout.tsx[22m
 [2m13:54:35[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/App.tsx, /src/components/PatientForm.tsx, /src/components/MswTimeline.tsx, /src/components/FamilyHandout.tsx[22m
+[2m14:07:31[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/components/PatientForm.tsx[22m
+[2m14:07:31[22m [36m[1m[vite][22m[39m [32mpage reload [39m[2msrc/data/personas.ts[22m
+[2m14:07:31[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/App.tsx, /src/components/PatientForm.tsx, /src/components/MswTimeline.tsx, /src/components/FamilyHandout.tsx[22m
+[2m14:07:31[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/styles.css[22m
+[2m14:07:31[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/App.tsx[22m
+[2m14:18:26[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/components/PatientForm.tsx[22m
+[2m14:18:26[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/App.tsx[22m
+[2m14:18:26[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/App.tsx, /src/components/PatientForm.tsx, /src/components/MswTimeline.tsx, /src/components/FamilyHandout.tsx[22m
+[2m14:18:26[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/styles.css[22m
+[2m14:18:26[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/App.tsx[22m
