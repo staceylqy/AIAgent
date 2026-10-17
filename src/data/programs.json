@@ -1,0 +1,265 @@
+[
+  {
+    "id": "high_cost_medical",
+    "nameJa": "高額療養費制度",
+    "nameEn": "High-Cost Medical Care Benefit",
+    "phase": "during_stay",
+    "source": {
+      "labelJa": "厚生労働省「高額療養費制度」",
+      "labelEn": "MHLW: high-cost medical care benefit",
+      "url": "https://www.mhlw.go.jp/"
+    },
+    "conditions": {
+      "all": [
+        {
+          "field": "insurance",
+          "op": "in",
+          "values": ["employees_health", "national_health", "elderly"]
+        }
+      ]
+    },
+    "reasonJa": "{age}歳で{insurance}に加入しているため、1か月の医療費自己負担額には所得区分に応じた上限が設けられます。上限を超えた分は高額療養費として払り戻され、入院前に「限度額適用認定証」を取得すれば窓口支払いを上限までに抑えられます。",
+    "reasonEn": "At {age}, covered by {insurance}, monthly out-of-pocket medical costs are capped by income category. Amounts above the cap are reimbursed as high-cost medical care benefits, and an advance limit certificate keeps hospital billing at the cap.",
+    "plainJa": "医療費が高くなっても、1か月の支払いには所得に応じた上限があります。超えた分は後から戻ってきます。あらかじめ申請しておくと、窓口での支払いが最初から上限までで済みます。",
+    "plainEn": "Even if medical costs rise, there is a monthly limit on what you pay, set by household income. Anything above it is paid back later, and applying in advance keeps the counter payment at the limit.",
+    "todoJa": "病院の会計窓口で「限度額適用認定証」の申請を確認する",
+    "todoEn": "Ask the hospital billing desk about applying for a co-payment limit certificate"
+  },
+  {
+    "id": "sickness_allowance",
+    "nameJa": "傷病手当金",
+    "nameEn": "Sickness and Injury Allowance",
+    "phase": "during_stay",
+    "source": {
+      "labelJa": "全国健康保険協会「傷病手当金」",
+      "labelEn": "Kyokai Kenpo: sickness allowance",
+      "url": "https://www.kyoukaikenpo.or.jp/"
+    },
+    "conditions": {
+      "all": [
+        { "field": "employment", "op": "eq", "value": "employed" },
+        { "field": "insurance", "op": "eq", "value": "employees_health" }
+      ]
+    },
+    "reasonJa": "就労しており{insurance}に加入しているため、療養のための休業で給与を受けられない期間について、休業開始から4日目以降、標準報酬月額の約3分の2が最長1年6か月支給されます。",
+    "reasonEn": "Employed and covered by employees' health insurance, the patient can receive about two-thirds of monthly standard remuneration for up to 1.5 years, starting from the 4th day of absence, for periods when no salary is paid.",
+    "plainJa": "働けない間、給料の代わりに健康保険からお金が支給される制度です。勤務先と健康保険に書類を提出します。",
+    "plainEn": "While the patient cannot work and receives no salary, health insurance pays about two-thirds of the usual pay, for up to 1.5 years.",
+    "todoJa": "勤務先(人事・総務)に連絡し、傷病手当金の申請書をもらう",
+    "todoEn": "Contact the employer (HR) to obtain the allowance application forms"
+  },
+  {
+    "id": "disability_employees_pension",
+    "nameJa": "障害厚生年金",
+    "nameEn": "Disability Employees' Pension",
+    "phase": "after_discharge",
+    "source": {
+      "labelJa": "日本年金機構「障害年金」",
+      "labelEn": "Japan Pension Service: disability pension",
+      "url": "https://www.nenkin.go.jp/"
+    },
+    "conditions": {
+      "all": [
+        { "field": "employment", "op": "eq", "value": "employed" },
+        {
+          "field": "adl",
+          "op": "in",
+          "values": ["support_needed", "care_needed"]
+        }
+      ]
+    },
+    "reasonJa": "現役就労で厚生年金の被保険者期間があるため、障害認定日(原則、初診日から1年6か月後)に1〜3級の障害状態に該当すれば障害厚生年金が支給されます。初診日の記録(勤務先・年金手帳)を入院中に確認しておくことが重要です。",
+    "reasonEn": "With Employees' Pension coverage through work, a disability employees' pension is payable if residual impairment at the disability determination date (usually 18 months after the first examination) meets grades 1-3. Confirming the first-examination date record during the stay is important.",
+    "plainJa": "後遺症が残った場合、年金制度からお金が支給されることがあります。将来に備えた手続きで、早めに書類を整えておくと安心です。",
+    "plainEn": "If lasting impairment remains, the public pension system may pay a disability pension. Preparing documents early makes the later process smoother.",
+    "todoJa": "年金手帳・初診日の記録を確認して保管しておく",
+    "todoEn": "Locate and keep the pension handbook and records of the first hospital visit"
+  },
+  {
+    "id": "disability_basic_pension",
+    "nameJa": "障害基礎年金",
+    "nameEn": "Disability Basic Pension",
+    "phase": "after_discharge",
+    "source": {
+      "labelJa": "日本年金機構「障害年金」",
+      "labelEn": "Japan Pension Service: disability pension",
+      "url": "https://www.nenkin.go.jp/"
+    },
+    "conditions": {
+      "all": [
+        {
+          "field": "employment",
+          "op": "in",
+          "values": ["self_employed", "not_employed"]
+        },
+        { "field": "age", "op": "lt", "value": 65 },
+        { "field": "adl", "op": "eq", "value": "care_needed" }
+      ]
+    },
+    "reasonJa": "国民年金の加入期間をもち65歳未満のため、障害認定日(原則、初診日から1年6か月後)に1級・2級の障害状態に該当すれば障害基礎年金が支給されます。加入記録の確認を年金事務所で行います。",
+    "reasonEn": "Under 65 with a National Pension record, the disability basic pension is payable if impairment at the determination date meets grade 1 or 2. The pension office first verifies the coverage record.",
+    "plainJa": "重い後遺症が残った場合、国民年金の制度からお金が支給されることがあります。年金手帳を準備しておいてください。",
+    "plainEn": "If severe impairment remains, the National Pension system may pay a disability pension. Please keep the pension handbook ready.",
+    "todoJa": "年金手帳を探しておく",
+    "todoEn": "Find the pension handbook"
+  },
+  {
+    "id": "ltc_insurance",
+    "nameJa": "介護保険サービス(要介護認定)",
+    "nameEn": "Long-Term Care Insurance (needs certification)",
+    "phase": "during_stay",
+    "source": {
+      "labelJa": "厚生労働省「介護保険制度」",
+      "labelEn": "MHLW: long-term care insurance",
+      "url": "https://www.mhlw.go.jp/"
+    },
+    "conditions": {
+      "any": [
+        { "field": "age", "op": "gte", "value": 65 },
+        {
+          "all": [
+            { "field": "age", "op": "gte", "value": 40 },
+            { "field": "age", "op": "lt", "value": 65 },
+            {
+              "field": "diagnosis",
+              "op": "in",
+              "values": [
+                "cerebral_infarction",
+                "cerebral_hemorrhage",
+                "subarachnoid_hemorrhage"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "reasonJa": "脳卒中は介護保険の特定疾病に該当するため、40〜64歳でも医療意見書を添えて要介護認定を申請できます(65歳以上は年齢要件のみ)。退院日にサービスを開始できるよう、入院中に市区町村へ申請することが重要です。",
+    "reasonEn": "Stroke is a designated disease under long-term care insurance, so patients aged 40-64 can apply for needs certification with a medical opinion (65+ qualify by age alone). Applying to the municipality during the stay lets services start on discharge day.",
+    "plainJa": "退院後、介護の必要度を市区町村が認定する制度です。認定されると、訪問介護やデイサービス、車いすなどのレンタルが利用しやすい料金で使えます。",
+    "plainEn": "After discharge, the city certifies the level of care needed. Services such as home help, day care, and wheelchair rental then cost only 10-30% of the fee.",
+    "todoJa": "退院後に使いたいサービスを家族で話し合っておく",
+    "todoEn": "Family should discuss which services to use after discharge"
+  },
+  {
+    "id": "disability_certificate",
+    "nameJa": "身体障害者手帳",
+    "nameEn": "Physical Disability Certificate",
+    "phase": "after_discharge",
+    "source": {
+      "labelJa": "厚生労働省「身体障害者手帳」",
+      "labelEn": "MHLW: physical disability certificate",
+      "url": "https://www.mhlw.go.jp/"
+    },
+    "conditions": {
+      "all": [
+        {
+          "field": "adl",
+          "op": "in",
+          "values": ["support_needed", "care_needed"]
+        }
+      ]
+    },
+    "reasonJa": "身体機能の後遺症が残る見込みのため、指定医の診断書に基づき市区町村へ身体障害者手帳(1〜6級)の取得を申請できます。取得後は障害福祉サービス、税の減免、交通料金の割引等の範囲が広がります。原則、症状が固定してからの申請になります。",
+    "reasonEn": "With lasting physical impairment expected, the patient can apply for a physical disability certificate (grades 1-6) with a designated-physician diagnosis. It unlocks welfare services, tax reductions, and transport discounts; application usually follows symptom stabilization.",
+    "plainJa": "体の不自由が続くとき、市区町村から「身体障害者手帳」をもらえます。持っていると、料金の割引や税の減免、サービスの利用など支援の幅が広がります。",
+    "plainEn": "If physical impairment continues, the city issues a disability certificate. It unlocks fare discounts, tax reductions, and welfare services.",
+    "todoJa": "申請に使う証明写真を撮っておく",
+    "todoEn": "Have a profile photo taken for the application"
+  },
+  {
+    "id": "disability_welfare_services",
+    "nameJa": "障害福祉サービス(自立訓練等)",
+    "nameEn": "Disability welfare services",
+    "phase": "after_discharge",
+    "source": {
+      "labelJa": "厚生労働省「障害福祉サービス」",
+      "labelEn": "MHLW: disability welfare services",
+      "url": "https://www.mhlw.go.jp/"
+    },
+    "conditions": {
+      "all": [
+        { "field": "age", "op": "lt", "value": 65 },
+        {
+          "field": "adl",
+          "op": "in",
+          "values": ["support_needed", "care_needed"]
+        }
+      ]
+    },
+    "reasonJa": "65歳未満のため、介護保険の特定疾病該当と並行して、障害者総合支援法に基づく障害福祉サービス(自立訓練(機能訓練)・ホームヘルプ等)の利用も市区町村の障害福祉窓口に相談できます。身体障害者手帳または医師の意見書をもとに支給決定を受けます。",
+    "reasonEn": "Being under 65, disability welfare services under the Services and Supports for Persons with Disabilities Act (independent-living training, home help, etc.) can also be consulted at the municipal disability welfare section, in parallel with LTCI certification. Support decisions are based on the certificate or a medical opinion.",
+    "plainJa": "65歳未満の方は、リハビリや生活の支援を「障害者向けの制度」でも利用できます。市区町村の窓口に相談します。",
+    "plainEn": "Patients under 65 can also use the disability welfare system for rehabilitation and daily-life support. Consult the municipal office.",
+    "todoJa": "市区町村の障害福祉窓口の連絡先を控えておく",
+    "todoEn": "Note the contact for the municipal disability welfare section"
+  },
+  {
+    "id": "special_disability_allowance",
+    "nameJa": "特別障害者手当",
+    "nameEn": "Special Disability Allowance",
+    "phase": "after_discharge",
+    "source": {
+      "labelJa": "厚生労働省「特別障害者手当」",
+      "labelEn": "MHLW: special disability allowance",
+      "url": "https://www.mhlw.go.jp/"
+    },
+    "conditions": {
+      "all": [
+        { "field": "age", "op": "gte", "value": 20 },
+        { "field": "adl", "op": "eq", "value": "care_needed" }
+      ]
+    },
+    "reasonJa": "常時介護を要する重度の障害状態が継続する見込みのため、所得制限の範囲内で特別障害者手当(月額5万円程度)を市区町村へ申請できます。",
+    "reasonEn": "With severe, care-intensive impairment expected to continue, the Special Disability Allowance (about JPY 50,000/month, subject to income limits) can be applied for at the municipality.",
+    "plainJa": "介護が必要な状態が長く続くとき、市区町村から毎月の手当が支給されることがあります。世帯の収入によっては受けられません。",
+    "plainEn": "When intensive care needs continue long-term, the city may pay a monthly allowance; household income limits apply.",
+    "todoJa": "市区町村の福祉窓口で申請方法を確認する",
+    "todoEn": "Ask the municipal welfare desk how to apply"
+  },
+  {
+    "id": "public_assistance",
+    "nameJa": "生活保護",
+    "nameEn": "Public Assistance",
+    "phase": "now",
+    "source": {
+      "labelJa": "厚生労働省「生活保護」",
+      "labelEn": "MHLW: public assistance",
+      "url": "https://www.mhlw.go.jp/"
+    },
+    "conditions": {
+      "all": [
+        { "field": "employment", "op": "eq", "value": "not_employed" },
+        { "field": "family", "op": "eq", "value": "alone" }
+      ]
+    },
+    "reasonJa": "就労収入がなく独居であるため、生活費・医療費の支払いが困難になった場合、福祉事務所へ生活保護(生活扶助・医療扶助)の申請を即時に検討します。入院中は家賃・公共料金の維持と未納の確認が急務です。実際の受給には収入・資産の調査が必要です。",
+    "reasonEn": "With no work income and living alone, immediate application for public assistance (living and medical aid) at the welfare office should be considered if payments become unaffordable. During hospitalization, keeping up rent and utilities is urgent; actual receipt requires an income and asset check.",
+    "plainJa": "生活費や医療費の支払いが難しいとき、国の制度で暮らしと医療費を支払ってもらえます。相談だけでも福祉事務所でできます。",
+    "plainEn": "If living and medical costs become unaffordable, public assistance can cover them. Consulting the welfare office is free and confidential.",
+    "todoJa": "福祉事務所に相談する日を決める",
+    "todoEn": "Decide a day to visit the welfare office"
+  },
+  {
+    "id": "ltc_cost_cap",
+    "nameJa": "高額介護サービス費",
+    "nameEn": "High-Cost LTCI Benefit",
+    "phase": "after_discharge",
+    "source": {
+      "labelJa": "厚生労働省「高額介護サービス費」",
+      "labelEn": "MHLW: high-cost LTCI benefit",
+      "url": "https://www.mhlw.go.jp/"
+    },
+    "conditions": {
+      "all": [
+        { "field": "age", "op": "gte", "value": 40 },
+        { "field": "adl", "op": "eq", "value": "care_needed" }
+      ]
+    },
+    "reasonJa": "要介護認定の程度が高くなると予測されるため、介護サービスの1か月の利用者負担には世帯所得に応じた上限(一般所得区分で約4万4千円)が設けられます。高額介護サービス費として超過分が払い戻されます。",
+    "reasonEn": "With high needs certification expected, monthly LTCI co-payments are capped by income band (about JPY 44,000 for the standard band); the excess is reimbursed as high-cost LTCI benefits.",
+    "plainJa": "介護サービスを多く使っても、1か月の支払いには上限があります。超えた分は後から戻ってきます。",
+    "plainEn": "Even with heavy service use, there is a monthly cap on care-service payments; anything above it is returned later.",
+    "todoJa": "市区町村の介護保険窓口で負担上限額を確認する",
+    "todoEn": "Ask the municipal LTCI desk about the co-payment cap"
+  }
+]

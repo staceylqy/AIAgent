@@ -1,0 +1,405 @@
+:root {
+  --bg: #f4f6f8;
+  --panel: #ffffff;
+  --ink: #1f2933;
+  --muted: #6b7580;
+  --line: #d9e0e6;
+  --accent: #14746f;
+  --accent-soft: #e3f0ef;
+  --now: #c0392b;
+  --now-soft: #fdecea;
+  --during: #b9770e;
+  --during-soft: #fdf3e0;
+  --after: #2a6f97;
+  --after-soft: #e8f1f8;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Yu Gothic UI",
+    "Meiryo", system-ui, -apple-system, sans-serif;
+  line-height: 1.7;
+}
+
+.app {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding-bottom: 12px;
+  border-bottom: 2px solid var(--accent);
+  margin-bottom: 16px;
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 1.4rem;
+  color: var(--accent);
+}
+
+.tagline {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.header-controls {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.persona-button,
+.lang-toggle,
+.tab,
+.primary {
+  font: inherit;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.persona-button {
+  border: 1px solid var(--accent);
+  background: var(--panel);
+  color: var(--accent);
+  padding: 6px 12px;
+  font-size: 0.85rem;
+}
+
+.persona-button.active {
+  background: var(--accent);
+  color: #fff;
+}
+
+.lang-toggle {
+  border: 1px solid var(--line);
+  background: var(--panel);
+  color: var(--ink);
+  padding: 6px 12px;
+  font-size: 0.85rem;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 340px 1fr;
+  gap: 16px;
+  align-items: start;
+}
+
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 1px 3px rgba(31, 41, 51, 0.06);
+}
+
+.form h2 {
+  margin: 0 0 12px;
+  font-size: 1.05rem;
+}
+
+.persona-profile {
+  margin: 0 0 12px;
+  padding: 10px 12px;
+  background: var(--accent-soft);
+  border-radius: 8px;
+  font-size: 0.82rem;
+  color: var(--ink);
+}
+
+.form label {
+  display: block;
+  margin-bottom: 12px;
+}
+
+.form label span {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+
+.form select,
+.form input {
+  width: 100%;
+  padding: 8px 10px;
+  font: inherit;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: #fff;
+}
+
+.primary {
+  width: 100%;
+  padding: 10px;
+  margin-top: 4px;
+  background: var(--accent);
+  border: none;
+  color: #fff;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.primary:hover {
+  opacity: 0.9;
+}
+
+.hint {
+  font-size: 0.75rem;
+  color: var(--muted);
+  margin: 10px 0 0;
+}
+
+.placeholder {
+  color: var(--muted);
+  text-align: center;
+  padding: 40px 0;
+}
+
+.tabs {
+  display: flex;
+  gap: 8px;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 16px;
+}
+
+.tab {
+  border: none;
+  background: none;
+  padding: 8px 14px;
+  color: var(--muted);
+  border-bottom: 3px solid transparent;
+  font-size: 0.95rem;
+}
+
+.tab.active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+  font-weight: 600;
+}
+
+.patient-summary {
+  background: var(--accent-soft);
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin-bottom: 16px;
+  font-size: 0.85rem;
+}
+
+.patient-summary p {
+  margin: 4px 0 0;
+}
+
+.phase-group {
+  margin-bottom: 20px;
+}
+
+.phase-heading {
+  display: inline-block;
+  font-size: 0.85rem;
+  padding: 3px 12px;
+  border-radius: 999px;
+  margin: 0 0 10px;
+}
+
+.phase-heading.phase-now {
+  background: var(--now-soft);
+  color: var(--now);
+}
+
+.phase-heading.phase-during_stay {
+  background: var(--during-soft);
+  color: var(--during);
+}
+
+.phase-heading.phase-after_discharge {
+  background: var(--after-soft);
+  color: var(--after);
+}
+
+.program-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+}
+
+.program-card {
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--accent);
+  border-radius: 8px;
+  padding: 12px 14px;
+}
+
+.program-card p {
+  margin: 8px 0 0;
+  font-size: 0.88rem;
+}
+
+.program-card-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: baseline;
+  flex-wrap: wrap;
+}
+
+.source-link {
+  font-size: 0.75rem;
+  color: var(--accent);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.source-link:hover {
+  text-decoration: underline;
+}
+
+.family-handout h2 {
+  margin: 0 0 8px;
+  font-size: 1.15rem;
+  color: var(--accent);
+}
+
+.handout-header p {
+  margin: 0 0 4px;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.handout-section {
+  margin-top: 18px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--line);
+}
+
+.handout-section h3 {
+  margin: 0 0 8px;
+  font-size: 0.95rem;
+  color: var(--ink);
+}
+
+.handout-text {
+  width: 100%;
+  font: inherit;
+  font-size: 0.9rem;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  resize: vertical;
+  line-height: 1.7;
+}
+
+.print-only {
+  display: none;
+}
+
+.todo-section {
+  background: var(--accent-soft);
+  border-radius: 8px;
+  padding: 14px;
+  border-top: none;
+}
+
+.todo-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.todo-item {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 6px 0;
+  font-size: 0.9rem;
+}
+
+.todo-item input {
+  margin-top: 5px;
+}
+
+.handout-actions {
+  margin-top: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.edit-hint {
+  font-size: 0.78rem;
+  color: var(--muted);
+  margin: 0;
+  flex: 1;
+  min-width: 200px;
+}
+
+.handout-actions .primary {
+  width: auto;
+  padding: 8px 28px;
+}
+
+.footer {
+  margin-top: 20px;
+  padding: 10px;
+  font-size: 0.75rem;
+  color: var(--muted);
+  text-align: center;
+}
+
+@media (max-width: 900px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media print {
+  body {
+    background: #fff;
+  }
+
+  .no-print,
+  .header,
+  .footer,
+  .form-panel {
+    display: none !important;
+  }
+
+  .print-only {
+    display: block;
+    font-size: 0.95rem;
+    white-space: pre-wrap;
+  }
+
+  .layout {
+    display: block;
+  }
+
+  .panel {
+    border: none;
+    box-shadow: none;
+    padding: 0;
+  }
+
+  .todo-item input {
+    display: none;
+  }
+}
